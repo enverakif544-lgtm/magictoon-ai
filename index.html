@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MagicToon AI V2</title>
+<style>
+:root{
+--bg:#09090f;--card:#171722;--box:#101018;--p:#a855f7;--b:#3b82f6;--r:#f43f5e;--t:#f4f4f5;--m:#a1a1aa;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:radial-gradient(circle at top,#1b1230,#09090f);color:var(--t);padding:16px;min-height:100vh}
+.container{max-width:520px;margin:auto;background:var(--card);border:1px solid #2b2b3f;border-radius:22px;padding:18px;box-shadow:0 0 30px #000}
+h1{text-align:center;font-size:32px;background:linear-gradient(90deg,var(--p),var(--r));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sub{text-align:center;color:var(--m);margin:8px 0 18px}
+select,button{width:100%;padding:14px;border-radius:14px;border:0;font-size:16px;margin-bottom:12px}
+select{background:#111827;color:white;border:1px solid #333}
+button{background:linear-gradient(135deg,var(--p),var(--b));color:white;font-weight:bold;cursor:pointer}
+.copyall{background:linear-gradient(135deg,#22c55e,#16a34a)}
+.card{background:var(--box);border:1px solid #2a2a3e;border-radius:16px;padding:14px;margin:14px 0}
+.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:#c084fc;font-weight:bold;letter-spacing:1px}
+.copy{width:auto;padding:8px 12px;background:#2a2a3e;font-size:13px;margin:0}
+.content{white-space:pre-wrap;line-height:1.45;font-size:15px}
+.footer{text-align:center;color:var(--m);font-size:12px;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>✨ MagicToon AI V2 🤖</h1>
+<p class="sub">Baby Dragon & Baby Robot Shorts Generator</p>
+
+<select id="category">
+<option value="Mystery">Mystery</option>
+<option value="Comedy">Comedy</option>
+<option value="Education">Education</option>
+<option value="Adventure">Adventure</option>
+<option value="Space">Space</option>
+<option value="Scary Cute">Scary Cute</option>
+</select>
+
+<button onclick="generate()">Generate New Shorts Pack</button>
+<button class="copyall" onclick="copyAll()">Copy All</button>
+
+<div id="results" style="display:none">
+<div class="card"><div class="head">🔥 SEO TITLE <button class="copy" onclick="copy('title')">Copy</button></div><div id="title" class="content"></div></div>
+<div class="card"><div class="head">💡 VIDEO IDEA <button class="copy" onclick="copy('idea')">Copy</button></div><div id="idea" class="content"></div></div>
+<div class="card"><div class="head">📝 DESCRIPTION + HASHTAGS <button class="copy" onclick="copy('desc')">Copy</button></div><div id="desc" class="content"></div></div>
+<div class="card"><div class="head">🎬 30 SEC SCRIPT <button class="copy" onclick="copy('script')">Copy</button></div><div id="script" class="content"></div></div>
+<div class="card"><div class="head">🖼️ IMAGE PROMPT <button class="copy" onclick="copy('imagePrompt')">Copy</button></div><div id="imagePrompt" class="content"></div></div>
+<div class="card"><div class="head">🎥 VIDEO PROMPT <button class="copy" onclick="copy('videoPrompt')">Copy</button></div><div id="videoPrompt" class="content"></div></div>
+</div>
+
+<p class="footer">No API needed • Free version • MagicToon AI</p>
+</div>
+
+<script>
+const data = {
+Mystery:[
+["Baby Dragon Found a Secret Door! 😱🐉","Baby Dragon and Baby Robot discover a glowing door inside a dark forest.","A mysterious glowing door appears in the forest. Baby Dragon wants to open it, but Baby Robot detects strange sounds behind it."],
+["The Whispering Cave Mystery! 🕯️🤖","They hear a tiny voice coming from a cave.","Baby Dragon and Baby Robot follow a strange whisper into a glowing cave and find something unexpected."]
+],
+Comedy:[
+["Baby Robot’s Cake Disaster! 🎂🤖","Baby Robot tries to bake a cake, but Baby Dragon sneezes fire.","A simple cake recipe turns into a hilarious kitchen explosion when Baby Dragon hiccups fire."],
+["The Flying Sandwich Problem! 🥪🐉","A magic sandwich starts flying away.","Baby Dragon and Baby Robot chase a flying sandwich through the room."]
+],
+Education:[
+["Baby Dragon Learns Colors! 🌈🐉","Baby Robot teaches Baby Dragon colors using magic blocks.","Baby Dragon learns red, blue, yellow, and green in a fun colorful adventure."],
+["Shapes Adventure With Baby Robot! 🔺🤖","They learn circles, squares, and triangles.","Baby Robot teaches shapes while Baby Dragon accidentally turns them into toys."]
+],
+Adventure:[
+["The Lost Golden Egg! 🥚✨","They search for a glowing golden egg.","Baby Dragon and Baby Robot follow clues to find a magical golden egg."],
+["Tiny Heroes Big Volcano! 🌋🐉","They visit a friendly volcano.","A cute volcano needs help, and the duo must solve a glowing puzzle."]
+],
+Space:[
+["Baby Dragon on the Moon! 🌙🐉","They fly to the moon in a tiny rocket.","Baby Dragon and Baby Robot land on the moon and meet a bouncing star creature."],
+["Robot Lost in Space! 🚀🤖","Baby Robot floats away in zero gravity.","Baby Dragon must rescue Baby Robot before he bumps into a tiny asteroid."]
+],
+"Scary Cute":[
+["Something Is Watching Them! 👀🌲","Glowing eyes appear in the forest.","The forest goes silent, and Baby Dragon realizes something cute but spooky is hiding."],
+["The Tiny Ghost Friend! 👻🐉","A little ghost follows them home.","Baby Dragon is scared until Baby Robot discovers the ghost just wants a friend."]
+]
+};
+
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+
+function generate(){
+const cat=document.getElementById("category").value;
+const item=pick(data[cat]);
+const title=item[0];
+const idea=item[1];
+const story=item[2];
+
+document.getElementById("results").style.display="block";
+document.getElementById("title").innerText=title;
+
+document.getElementById("idea").innerText=idea;
+
+document.getElementById("desc").innerText=
+story+"\n\nWatch Baby Dragon and Baby Robot in a cute, funny and cinematic animated Shorts adventure!\n\n#Shorts #BabyDragon #BabyRobot #KidsAnimation #MagicToonAI #CuteAnimation #YouTubeShorts";
+
+document.getElementById("script").innerText=
+"Scene: "+story+"\n\n"+
+"Baby Dragon: \"Whoa... what is that?\"\n"+
+"Baby Robot: \"Scanning... unknown magic detected.\"\n"+
+"Baby Dragon: \"Should we run?\"\n"+
+"Baby Robot: \"Negative. We should investigate carefully.\"\n"+
+"[A bright glow appears. Both characters step closer.]\n"+
+"Baby Dragon: \"It looks scary... but also cute!\"\n"+
+"Baby Robot: \"Confirmed. Danger level: adorable.\"\n"+
+"Baby Dragon: \"This is the weirdest adventure ever!\"\n"+
+"Baby Robot: \"And probably not the last!\"";
+
+document.getElementById("imagePrompt").innerText=
+"Pixar-quality 3D animation style, cute Baby Dragon and Baby Robot, "+story+
+", cinematic lighting, colorful magical atmosphere, expressive faces, ultra detailed, vertical 9:16, family friendly.";
+
+document.getElementById("videoPrompt").innerText=
+"Create a 30-second vertical 9:16 animated YouTube Shorts video. Baby Dragon and Baby Robot are in this scene: "+story+
+" Use cinematic camera movement, colorful lighting, cute expressions, funny timing, and family-friendly adventure style.";
+}
+
+function copy(id){
+navigator.clipboard.writeText(document.getElementById(id).innerText);
+alert("Copied!");
+}
+
+function copyAll(){
+let all =
+"TITLE:\n"+title.innerText+"\n\n"+
+"IDEA:\n"+idea.innerText+"\n\n"+
+"DESCRIPTION:\n"+desc.innerText+"\n\n"+
+"SCRIPT:\n"+script.innerText+"\n\n"+
+"IMAGE PROMPT:\n"+imagePrompt.innerText+"\n\n"+
+"VIDEO PROMPT:\n"+videoPrompt.innerText;
+navigator.clipboard.writeText(all);
+alert("All copied!");
+}
+</script>
+</body>
+</html>
