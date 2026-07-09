@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MagicToon AI - YouTube Shorts Generator</title>
+  <style>
+    :root {
+      --bg-dark: #0f0f13;
+      --card-bg: #1a1a24;
+      --primary-color: #a855f7; /* Violet */
+      --secondary-color: #3b82f6; /* Blue */
+      --accent-color: #f43f5e; /* Rose */
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border: 1px solid #2e2e3f;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(to right, #a855f7, #f43f5e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.2rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .btn-generate {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.2s;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    }
+
+    .btn-generate:active {
+      transform: scale(0.98);
+    }
+
+    .output-section {
+      display: none;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .output-card {
+      background: #12121a;
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid #27273a;
+      position: relative;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .btn-copy {
+      background: #27273a;
+      border: none;
+      color: var(--text-main);
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: var(--primary-color);
+    }
+
+    .card-content {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    /* Highlight style for script lines */
+    .script-line {
+      margin-bottom: 0.4rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>✨ MagicToon AI 🤖</h1>
+      <p>Shorts Generator: Baby Dragon & Baby Robot</p>
+    </header>
+
+    <button class="btn-generate" onclick="generateShorts()">Generate New Adventure!</button>
+
+    <div class="output-section" id="outputSection">
+      
+      <!-- Video Idea -->
+      <div class="output-card">
+        <div class="card-header">
+          <span class="card-title">💡 Video Idea</span>
+          <button class="btn-copy" onclick="copyText('ideaContent', this)">Copy</button>
+        </div>
+        <div class="card-content" id="ideaContent">Generating...</div>
+      </div>
+
+      <!-- Catchy Title -->
+      <div class="output-card">
+        <div class="card-header">
+          <span class="card-title">🏷️ Catchy Title</span>
+          <button class="btn-copy" onclick="copyText('titleContent', this)">Copy</button>
+        </div>
+        <div class="card-content" id="titleContent" style="font-weight: bold; color: #fff;">Generating...</div>
+      </div>
+
+      <!-- Description & Hashtags -->
+      <div class="output-card">
+        <div class="card-header">
+          <span class="card-title">📝 Description & Tags</span>
+          <button class="btn-copy" onclick="copyText('descContent', this)">Copy</button>
+        </div>
+        <div class="card-content" id="descContent">Generating...</div>
+      </div>
+
+      <!-- 30-Second Script -->
+      <div class="output-card">
+        <div class="card-header">
+          <span class="card-title">🎬 30s Script Dialogue</span>
+          <button class="btn-copy" onclick="copyText('scriptContent', this)">Copy</button>
+        </div>
+        <div class="card-content" id="scriptContent">Generating...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Asset pools for random adventure construction
+    const settings = [
+      "a Zero-Gravity Playroom",
+      "a Giant Magnetic Sandbox",
+      "a Cloud Trampoline Castle",
+      "a Volcano Playground",
+      "a Futuristic Kitchen",
+      "a Bubble Wrap Galaxy"
+    ];
+
+    const actions = [
+      "trying to bake a holographic chocolate cake",
+      "playing a chaotic game of high-speed hide-and-seek",
+      "attempting to assemble a rocket-powered toy puzzle",
+      "learning to fly using a mini jetpack",
+      "trying to build a cozy fort out of super-magnets"
+    ];
+
+    const punchlines = [
+      "resulting in a magnetic sticky mess!",
+      "accidentally blasting off into the ceiling!",
+      "melting the toys into a colorful pile of happy goop!",
+      "getting trapped in a giant, floating bubble!",
+      "causing a harmless but extremely bright sparkle-explosion!"
+    ];
+
+    const titles = [
+      "Baby Dragon VS Robot Jetpack Fail! 🚀🔥",
+      "When Magnet Toys Go Terribly Wrong...🧲🤖",
+      "Baking a Cake with Laser Fire! 🎂🔥",
+      "Baby Robot vs Zero Gravity Chaos! 🌌🤖",
+      "Dragon Sneeze Destroys the Fort! 💨✨",
+      "Is This the Cutest Rocket Launch Ever? 🚀🐉"
+    ];
+
+    const scripts = [
+      {
+        setup: "Sparky (the Baby Dragon) tries to show off his flight skills, but Beep (the Baby Robot) is worried about the math.",
+        dialogue: "[Visual: Sparky is wearing a tiny cape, wiggling his tail. Beep is furiously typing on a holographic screen.]\n\n" +
+                  "Beep: \"Warning! Flight trajectory shows a 99.9% chance of... ceiling collision.\"\n\n" +
+                  "Sparky: *Squeaks confidently, flaps wings hard, and shoots upward!*\n\n" +
+                  "Beep: *Beep-boop!* \"Adjusting safety cushions!\"\n\n" +
+                  "[Visual: Sparky bonks gently into a massive cloud cushion Beep deployed, giggling.]\n\n" +
+                  "Beep: \"Calculation successful. Cuteness overload detected.\""
+      },
+      {
+        setup: "Beep tries to teach Sparky how to build a block tower, but Sparky gets a sudden case of the hiccups.",
+        dialogue: "[Visual: Beep carefully stacks a perfect glowing neon block. Sparky watches with awe.]\n\n" +
+                  "Beep: \"Behold, Sparky. The perfect tower of structural integrity.\"\n\n" +
+                  "Sparky: *Hiccup!* *Shoots a tiny puff of purple fire!*\n\n" +
+                  "Beep: \"System Alert: Extreme heat detected!\"\n\n" +
+                  "[Visual: The blocks melt into a perfect glowing glowing puddle. Sparky looks apologetic.]\n\n" +
+                  "Beep: \"Revising structural plan. New objective: Marshmallow roasting!\""
+      },
+      {
+        setup: "The duo finds a giant magnetic toy, but Sparky's metal leash clip gets them stuck together.",
+        dialogue: "[Visual: Beep holds a powerful super-magnet. Sparky walks close, and CLANG! They stick side-by-side.]\n\n" +
+                  "Sparky: *Confused dragon noises, trying to wiggle away.*\n\n" +
+                  "Beep: \"Error 404: Personal space not found. Magnetism active.\"\n\n" +
+                  "Sparky: *Sneeze-sparks!* (The heat momentarily demagnetizes the latch.)\n\n" +
+                  "Beep: *Spinning head* \"Separation achieved. Let us do that again!\""
+      }
+    ];
+
+    function getRandomElement(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateShorts() {
+      // Show output section
+      document.getElementById('outputSection').style.display = 'flex';
+
+      // 1. Generate Idea
+      const setting = getRandomElement(settings);
+      const action = getRandomElement(actions);
+      const punchline = getRandomElement(punchlines);
+      const idea = `Sparky (the Baby Dragon) and Beep (the Baby Robot) are in ${setting} ${action}, ${punchline}`;
+      document.getElementById('ideaContent').innerText = idea;
+
+      // 2. Generate Title
+      const title = getRandomElement(titles);
+      document.getElementById('titleContent').innerText = title;
+
+      // 3. Generate Description & Hashtags
+      const hashtags = "#shorts #magictoon #babydragon #babyrobot #shortsfeed #animation #cute";
+      const description = `What happens when a clumsy baby dragon and a highly-calculated baby robot try to have some fun? Watch the chaos unfold!\n\n${hashtags}`;
+      document.getElementById('descContent').innerText = description;
+
+      // 4. Generate Script
+      const scriptTemplate = getRandomElement(scripts);
+      const fullScript = `Premise: ${scriptTemplate.setup}\n\n${scriptTemplate.dialogue}`;
+      document.getElementById('scriptContent').innerText = fullScript;
+    }
+
+    function copyText(elementId, button) {
+      const textToCopy = document.getElementById(elementId).innerText;
+      
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const originalText = button.innerText;
+        button.innerText = 'Copied! ✅';
+        button.style.backgroundColor = '#22c55e'; // Green transition
+        
+        setTimeout(() => {
+          button.innerText = originalText;
+          button.style.backgroundColor = '';
+        }, 1500);
+      }).catch(err => {
+        alert('Failed to copy text. Please select and copy manually.');
+      });
+    }
+  </script>
+</body>
+</html>
